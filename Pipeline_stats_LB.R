@@ -11,10 +11,10 @@ library(scico) # interfaace for colouring maps (pallets)
 #library(rethinking)
 
 #### Multi QC Data ####
-SHORT_multiqc_fastqc_TRIMMED <- read_table("Documents/Sheffield/Projects/MLcode/data/SHORT_multiqc_fastqc_TRIMMED.txt") %>% 
+SHORT_multiqc_fastqc_TRIMMED <- read_table("data/SHORT_multiqc_fastqc_TRIMMED.txt") %>% 
   select(-6)
 
-setwd("/Users/bip23lrb/Documents/Sheffield/Projects/MLcode")
+
 ## rename to match 
 names(SHORT_multiqc_fastqc_TRIMMED) <- c("filename", "No_seq", "CG_percentage", "Dedups_perc", "Av_seq_length")
 
@@ -31,7 +31,7 @@ SHORT_multiqc_fastqc_TRIMMED$ID <- sample_ID_list
 
 #### Samtools Stats Data ####
 ## seeing what I can work with 
-samtools_out <- read_delim("Documents/Sheffield/Projects/MLcode/data/samtools_out.txt", 
+samtools_out <- read_delim("data/samtools_out.txt", 
                            delim = ":", escape_double = FALSE, col_names = FALSE, 
                            trim_ws = TRUE)
 names(samtools_out) <- c("variable", "value")
@@ -72,7 +72,7 @@ samtools_wide <- data.frame(sampleID = sampleID,
 ### plotting ###
 
 #### BS Conversion Efficiency ####
-BS_con <- read_table("Documents/Sheffield/Projects/SoaySheep_wgbs_pipelineStats/data/BS_conversion_efficiency.txt", col_names = FALSE)
+BS_con <- read_table("data/BS_conversion_efficiency.txt", col_names = FALSE)
 names(BS_con) <- c("max.conversion.failure", "min.conversion.efficiency", "sample.run.id")
 
 #splitting up sample name and lanes
