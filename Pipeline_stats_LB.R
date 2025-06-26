@@ -72,7 +72,7 @@ samtools_wide <- data.frame(sampleID = sampleID,
 ### plotting ###
 
 #### BS Conversion Efficiency ####
-BS_con <- read_table("Documents/Sheffield/Projects/MLcode/data/BS_conversion_efficiency", col_names = FALSE)
+BS_con <- read_table("Documents/Sheffield/Projects/SoaySheep_wgbs_pipelineStats/data/BS_conversion_efficiency.txt", col_names = FALSE)
 names(BS_con) <- c("max.conversion.failure", "min.conversion.efficiency", "sample.run.id")
 
 #splitting up sample name and lanes
