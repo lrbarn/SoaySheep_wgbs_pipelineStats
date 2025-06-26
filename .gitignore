@@ -1,2 +1,5 @@
+#general
+.DS_Store
 
+# folders to ignore
 data/
