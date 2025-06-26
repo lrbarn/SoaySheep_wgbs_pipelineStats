@@ -31,5 +31,5 @@ Useful bits of code for extracting the data from the Stanage HPC
 
 ## Directory Structure
 - data is in a /data directory
-  - coverage files are within in their own directory called coverage
+  - coverage files are within in their own directory called /coverage
 - scripts and bash_cheatsheet.txt etc all in the main working directory
