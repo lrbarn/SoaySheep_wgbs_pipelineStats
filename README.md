@@ -10,5 +10,5 @@ This collates the genome breadth for different coverage thresholds and creaates 
 This collates some of the pipeline stats from multiQC data, samtools output, and BS conversion efficiency
 Work in progress
 
-### BashReference.txt
+### Bash_cheatsheet.txt
 Useful bits of code for extracting the data from the Stanage HPC
