@@ -1,0 +1,88 @@
+Copying pipeline.stats R script
+
+==== Prepping Data ====
+- using the "main" data set
+- working off the "trimmed" qc report
+
+<cd /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/qc>
+
+--> CAN'T ACCESS THIS FROM A WORKER NODE!
+
+- pulling out the correct columns for downstream analysis
+
+<cat multiqc_fastqc_TRIMMED.txt | cut -f '2 5 9 10 11'>
+
+- BUT need to save this to the correct area
+- new directory in my area called methylation_downstream/qc
+/users/bip23lrb/methylation_downstream
+
+- making the SHORT_multiqc to save in my area
+<cat multiqc_fastqc_TRIMMED.txt | cut -f '2 5 9 10 11' > /users/bip23lrb/methylation_downstream/qc/SHORT_multiqc_fastqc_TRIMMED.txt>
+
+- this is written
+- trying to download onto computer to analyse in R on local computer
+- saved in the MLcode project area
+
+====== Samtools Output =========
+** this will need to be done fully on the HPC **
+- this is all in the alignment_stats/ directory
+<cd /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/alignment_stats>
+
+- making the output file in my area -> samtools_out.txt
+
+for f in *.samtools_stats.txt; 
+do
+echo "sample: $f" >> /users/bip23lrb/methylation_downstream/qc/samtools_out.txt
+sed -n '1p; 8p; 19p; 24p' "$f" >> /users/bip23lrb/methylation_downstream/qc/samtools_out.txt
+done
+
+====== Average Coverage =====
+- not found a matching file name to the pipeline.stats.R code
+- guessing that the coverage is the "merged.bismark.cov.gz" file in the methylation area?
+- each sample has a merged.bismark file which contains the CpG location and proportion reads that are methylated/ unmethylated and total number of reads?
+- 
+
+===== Breadth of Coverage =====
+- each sample has a breadth file at various coverage levels
+- this is saved in alignment_stats in the shared area
+- the breadth file just contains one number
+	- cat will just print the number so should be fairly easy to pull them all together
+- there are several "coverage thresholds"
+	- 4x, 5x, 6x, 8x, 10x, 15x, 20x, 25x
+- the pipeline.stats.R code calculates the percent of genome covered at different read depth/ coverage thresholds and then combines them into one dataframe
+
+** again this chunk of code relies on having access to the files on the HPC which on stanage can't access shared area
+- alternative plan, extract the file names and coverage into several text files which contain coverage and sample ID to then transfer into R later
+
+/shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/alignment_stats
+
+----- for loop -----
+
+for f in *_10x.txt ;
+do 
+content=$(cat $f)
+echo "$f, $content" >> /users/bip23lrb/methylation_downstream/qc/coverage_10x.txt
+done
+
+---- in R ----
+- once all the files have been made can combine them with a column for each coverage and sample ID
+- can also then calculate percentage based on the genome length which is in the file for the reference genome
+- finally, will then be able to calculate the means etc across samples and then recreate the graphs 
+
+====== Bisulphite Conversion Efficiency =====
+- also all in the alignment_stats/ directory
+
+- having a go at making this file
+
+- created a space in my area for doing the analysis to
+/users/bip23lrb/methylation_downstream/qc/BS_conversion_efficiency
+
+- .BS-conversion.txt files are now in the alignment_stats directory
+
+- the code to "copy" the BS conversion files into one 
+
+- run each of these lines separately
+
+ for f in *.BS-conversion; do
+ cat "$f" >> /users/bip23lrb/methylation_downstream/qc/BS_conversion_efficiency
+ done
