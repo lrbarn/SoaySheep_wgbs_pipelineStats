@@ -4,8 +4,8 @@ library(tidyverse)
 
 ####Data####
 # directory
-dataDir <- "/Users/bip23lrb/Documents/Sheffield/Projects/MLcode/data/coverage"
-setwd(dataDir)
+dataDir <- "data/coverage"
+
 
 genomeLength <- 2654047367
 
@@ -14,14 +14,13 @@ genomeLength <- 2654047367
 # These should be accurate to your actual file names and desired column names
 coverage_thresholds <- c(4, 5, 6, 10, 15, 20, 25) # Add all the numeric thresholds you have files for
 columns <- c("fileName", "NumBases") # Your desired column names
-data_directory <- "." # Assuming 'coverage_Nx.txt' files are in the current working directory.
 # If they are in a subfolder like 'data/coverage/', change this to 'data/coverage'
 
 # --- 2. Create a list of all relevant files ---
 # This glob pattern will match coverage_4x.txt, coverage_5x.txt, etc.
 # The 'sprintf' makes the pattern flexible for single or double digit numbers
 all_coverage_files <- list.files(
-  path = data_directory,
+  path = dataDir,
   pattern = "^coverage_[0-9]+x\\.txt$", # Regex: starts with "coverage_", ends with ".txt", with numbers in between
   full.names = TRUE # Get the full path for read_csv
 )
@@ -119,3 +118,4 @@ ggplot(ImportCoverageData, aes(colour = coverageThreshold)) +
   labs(x = "Coverage Threshold",
        y = "Genome Breadth (Percentage)") +
   theme_bw()
+
