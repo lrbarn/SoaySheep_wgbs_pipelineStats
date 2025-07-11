@@ -29,7 +29,21 @@ The data expected here is a range
 ### Bash_cheatsheet.txt
 Useful bits of code for extracting the data from the Stanage HPC
 
+### BASIS_SCRIPT.R
+- this is a skeleton script for pulling together the raw .merged.bismakr.cov.gz files into methylKit
+- then does some simple stats
+- finally reformats the data into a large data frame to be used for elastic net regression in clock building
+
 ## Directory Structure
 - data is in a /data directory
   - coverage files are within in their own directory called /coverage
 - scripts and bash_cheatsheet.txt etc all in the main working directory
+
+# Miro Board Flowchart
+https://miro.com/app/board/uXjVIgK9yZw=/
+
+*Key* 
+square = data
+circle = script
+rounded square = location
+speech bubble = explanation
