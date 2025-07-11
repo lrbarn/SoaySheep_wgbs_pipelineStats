@@ -3,5 +3,6 @@
 
 # folders to ignore
 data/
+methylDB/
 .Rproj.user
 .Rhistory
