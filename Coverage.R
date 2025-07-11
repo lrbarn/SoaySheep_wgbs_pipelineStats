@@ -106,6 +106,7 @@ sumstat <- ImportCoverageData %>%
             min_perc = min(perc_cov),
             max_perc = max(perc_cov))
 
+
 #### Plotting ####
 ggplot(ImportCoverageData, aes(colour = coverageThreshold)) +
   geom_point(aes(x = coverageThreshold, y = perc_cov),alpha = 0.3) +
