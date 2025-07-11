@@ -109,4 +109,4 @@ done
 
 cd /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/
 
-cp /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/methylation/803-837.merged.bismark.cov.gz /users/bip23lrb/methylation_downstream/methylationAnalysis/bismarkFiles/803-837.merged.bismark.cov.gz
+cp /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/methylation/483-502.merged.bismark.cov.gz /users/bip23lrb/methylation_downstream/methylationAnalysis/bismarkFiles/483-502.merged.bismark.cov.gz
