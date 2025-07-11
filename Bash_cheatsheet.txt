@@ -86,3 +86,27 @@ done
  for f in *.BS-conversion; do
  cat "$f" >> /users/bip23lrb/methylation_downstream/qc/BS_conversion_efficiency
  done
+
+
+====== M-Bias =====
+- this is for looking at whether there is any methylation bias along the read lengths, rather than CpG position
+- there is an m-bais file for each sample 
+- this is to check that there has been complete bisulphite conversion
+- since this will be a lot of data starting with a small sample
+
+</users/bip23lrb/methylation_downstream/m-bias>
+
+- copying some of the data from the main set to this area /data
+
+
+===== merged.bismark.cov.gz ======
+
+- copying a couple of these to my area so that I can download them as a practice
+/users/bip23lrb/methylation_downstream/methylationAnalysis/bismarkFiles
+
+- in the methylation/ directory in the shared area 
+	- CANNOT be accessed from a worker node
+
+cd /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/
+
+cp /shared/slate_group1/Shared/methylated_soay/soay_wgbs_main_sep2024/nextflow_pipeline/methylation/803-837.merged.bismark.cov.gz /users/bip23lrb/methylation_downstream/methylationAnalysis/bismarkFiles/803-837.merged.bismark.cov.gz
