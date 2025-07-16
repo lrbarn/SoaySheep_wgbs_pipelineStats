@@ -2,6 +2,7 @@
 library(tidyverse)
 library(methylKit)
 library(glmnet)
+library(progress)
 # remember there will be some overlap in funciton names
 
 #### Data ####
@@ -80,8 +81,26 @@ for(i in seq(5, ncol(simple), 3)) { # bounces through each coverage column
 
 write_csv(Prop_methylated, "OutputData/Prop_methylated.csv")
 
+#### Reformatting #####
+## need columns as sites and rows as ids
+#pivot long
+Prop_methylated_long <- Prop_methylated %>%
+  pivot_longer(
+    cols = -site,            # Select all columns EXCEPT 'site'
+    names_to = "ID",     # New column 'Sample' will store the original sample names
+    values_to = "Methylation_Value" # New column 'Methylation_Value' will store the numeric values
+  )
+#pivot wide
+CpGmethylation <- Prop_methylated_long %>%
+  pivot_wider(
+    names_from = site,           # Values from the 'site' column become new column names
+    values_from = Methylation_Value # Values from 'Methylation_Value' fill the new columns
+  )
+
+#### ADDING AGE IN- THIS NEEDS TO BE ADJUSTED TO COME FROM THE METADATA FILE
+CpGmethylation$AgeY <- c(0,8,0,1,1,0,2)
+
 ### now onto the elastic net
-### BIG GAP TO FILL IN HERE ###
 
 #### LOOCV CLOCK ####
 ## Data Prep
@@ -115,7 +134,6 @@ testID <- NA
 nonZero_names_list <- list(NA)
 
 #### The LOAOCV Loop ####
-##     IN THEORY THIS WORKS BUT NEEDS A FOURTH SAMPLE SINCE THE MIN IS 3
 for (i in 1:n) {
   #1 Setting up the training and test data (one id in test)
   training <- CpGmethylation %>% filter(ID != ID_list[i]) %>% dplyr::select(-ID)
@@ -158,29 +176,54 @@ for (i in 1:n) {
 LOAOCV_output <- data.frame(runNumber = run,
                             lambda.min = lambda.min,
                             nonZero = nonZero)
-LOAOCV_predictions <- data.frame(testAge = testAge,
+LOAOCV_predictions <- data.frame(testID = testID,
+                                 testAge = testAge,
                                  testAgePRED = testAgePRED,
-                                 #testID = testID,
                                  error = testAge - testAgePRED,
                                  sq_error = (testAge - testAgePRED)^2,
-                                 ab_error = abs(testAge - testAgePRED),
-                                 testID = testID) %>% 
+                                 ab_error = abs(testAge - testAgePRED)) %>% 
   drop_na()
 
 # pulling together the frequency of each coefficient
 variable_freq <- as.data.frame(sort(table(unlist(nonZero_names_list)), decreasing = TRUE))
 colnames(variable_freq) <- c("VarName", "Freq")
 
+MeanSE <- mean(LOAOCV_predictions$sq_error)
+MedianAbsoluteError <- median(LOAOCV_predictions$ab_error)
+LOAOCV_correlation <- cor.test(LOAOCV_predictions$testAge, LOAOCV_predictions$testAgePRED)
+
 
 #### Plotting the results of LOAOCV####
 # The individual age against predicted age based on the left out model
 clockEstimates <- 
-ggplot(LOAOCV_predictions, aes(x = testAge, y = testAgePRED)) +
-  geom_point() + 
-  labs(x = "Age (years)",
-       y = "Predicted Age (Phenotype)",
-       title = "Epigenetic Clock 1.0") +
-  xlim(-0.5, 11) +
-  ylim(-0.5, 11) +
-  geom_abline(intercept = 0, slope = 1, colour = "pink", linetype = 2) +
+        ggplot(LOAOCV_predictions, aes(x = testAge, y = testAgePRED)) +
+          geom_point() + 
+          labs(x = "Age (years)",
+               y = "Predicted Age (Phenotype)",
+               title = "Epigenetic Clock 1.0") +
+          xlim(-0.5, 11) +
+          ylim(-0.5, 11) +
+          geom_abline(intercept = 0, slope = 1, colour = "pink", linetype = 2) +
+          theme_bw()
+
+# number of non-zero CpG coefficients selected by models
+numberSelectedCpGs <- 
+  ggplot(LOAOCV_output, aes(x = nonZero)) +
+  geom_bar() +
+  labs(x = "Number of Selected CpGs") +
   theme_bw()
+
+# Frequency each CpG is selected
+CpGFrequency <-
+  ggplot(variable_freq, aes(x = VarName, y = Freq)) +
+  geom_col() +
+  labs(x = "CpG",
+       y = "Selection Frequency") +
+  geom_text(data = variable_freq, aes(x = VarName, y = (Freq + 2), angle = 45),
+            label = paste("n = ", variable_freq$Freq)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#### pdf creation of plots ####
+ggsave("clockEstimates.pdf", plot = clockEstimates, dpi = 300)
+ggsave("numberSelectedCpGs.pdf", plot = numberSelectedCpGs, dpi = 300)
+ggsave("CpGFrequency.pdf", plot = CpGFrequency, dpi = 300)
