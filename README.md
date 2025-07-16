@@ -34,6 +34,11 @@ Useful bits of code for extracting the data from the Stanage HPC
 - then does some simple stats
 - finally reformats the data into a large data frame to be used for elastic net regression in clock building
 
+### MethylationAnalysis
+- for running on stanage
+- first 7 samples to make a LOOCV clock
+- pdfs of graphs
+
 ## Directory Structure
 - data is in a /data directory
   - coverage files are within in their own directory called /coverage
